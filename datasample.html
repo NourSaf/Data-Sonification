@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Sonification with Tone.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+</head>
+<body>
+    <button id="play">Play Data Sonification</button>
+
+    <script>
+        document.getElementById('play').addEventListener('click', async () => {
+            await Tone.start();  // Ensures audio context is started on user interaction
+            const synth = new Tone.Synth().toDestination();
+            console.log(synth)
+
+            const data = [3, 52, 80, 74, 75, 76]; // Example dataset (mapped to MIDI notes)
+
+            let time = 0;
+            data.forEach((value, index) => {
+                const note = Tone.Frequency(value, "midi").toNote();
+                Tone.Transport.scheduleOnce((time) => {
+                    synth.triggerAttackRelease(note, "1n", time);
+                }, `+${index * 0.5}`);
+            });
+
+            Tone.Transport.start();
+        });
+    </script>
+</body>
+</html>
